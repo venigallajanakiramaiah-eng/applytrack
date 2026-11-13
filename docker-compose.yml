@@ -1,0 +1,38 @@
+# Runs the full stack: PostgreSQL + Spring Boot API + React (served by nginx).
+#   docker compose up --build
+# Then open http://localhost:3000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: applytrack
+      POSTGRES_USER: applytrack
+      POSTGRES_PASSWORD: applytrack
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U applytrack"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://db:5432/applytrack
+      DB_USERNAME: applytrack
+      DB_PASSWORD: applytrack
+      JWT_SECRET: ${JWT_SECRET:-local-docker-secret-change-me-0123456789}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

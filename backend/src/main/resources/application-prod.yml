@@ -1,0 +1,10 @@
+# Production profile: PostgreSQL configured through environment variables.
+# Activate with SPRING_PROFILES_ACTIVE=prod
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/applytrack}
+    username: ${DB_USERNAME:applytrack}
+    password: ${DB_PASSWORD:applytrack}
+  jpa:
+    hibernate:
+      ddl-auto: update

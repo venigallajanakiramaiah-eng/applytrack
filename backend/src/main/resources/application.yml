@@ -1,0 +1,31 @@
+# Default profile: zero-setup local development with an in-memory H2 database.
+# Run with:  mvn spring-boot:run
+server:
+  port: 8080
+
+spring:
+  application:
+    name: applytrack
+  datasource:
+    url: jdbc:h2:mem:applytrack;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+
+app:
+  jwt:
+    # Override in production with the JWT_SECRET environment variable (at least 32 characters).
+    secret: ${JWT_SECRET:dev-only-secret-change-me-in-production-0123456789}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:1440}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
